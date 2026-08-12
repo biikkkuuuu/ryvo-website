@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryvo — An Android music player that stays out of your way</title>
+<meta name="description" content="Ryvo is a free, open-source Android music player. Ad-free streaming, synced lyrics, offline playback, no account required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF5E9;
+    --bg-soft:#FDF9F0;
+    --ink:#171310;
+    --ink-soft:#6B6459;
+    --accent:#4B3BFF;
+    --accent-2:#E23F9C;
+    --grad: linear-gradient(120deg, var(--accent) 0%, #7A4EFF 50%, var(--accent-2) 100%);
+
+    --c-peach:#FFD9B3;
+    --c-peach-ink:#7A3E10;
+    --c-butter:#FBE79A;
+    --c-butter-ink:#5C4A05;
+    --c-sage:#C7E6CE;
+    --c-sage-ink:#1F4A2C;
+    --c-lav:#DBD1F7;
+    --c-lav-ink:#3B2C7A;
+    --c-sky:#C7DAFB;
+    --c-sky-ink:#1E3A6E;
+    --c-rose:#F7CBD6;
+    --c-rose-ink:#7A2740;
+    --c-sand:#EFE2C4;
+    --c-sand-ink:#5A4A1E;
+
+    --line:#E7DFCE;
+    --maxw:1100px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    margin:0;
+    letter-spacing:-0.02em;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  /* ---------- LOGO MARK ---------- */
+  .mark{
+    width:34px;height:34px;flex:none;border-radius:11px;
+    background:var(--grad);
+    position:relative;
+    display:inline-block;
+  }
+  .mark::before,.mark::after{
+    content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,0.92);
+  }
+  .mark::before{width:9px;height:9px;top:9px;left:8px;}
+  .mark::after{width:5px;height:5px;bottom:8px;right:8px;background:rgba(255,255,255,0.6);}
+
+  /* ---------- NAV ---------- */
+  header{
+    padding:14px 0;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(251,245,233,0.92);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(231,223,206,0.75);
+  }
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;text-decoration:none;color:var(--ink);}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;
+    padding:13px 26px;border-radius:999px;text-decoration:none;
+    transition:transform .18s ease, box-shadow .18s ease, background .2s ease, border-color .18s ease;
+    cursor:pointer; border:1px solid transparent;
+  }
+  .btn-solid{background:var(--ink);color:var(--bg-soft);box-shadow:0 10px 24px -10px rgba(23,19,16,0.45);}
+  .btn-solid:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(23,19,16,0.5);}
+  .btn-ghost{background:var(--bg-soft);color:var(--ink);border-color:var(--line);}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--ink);}
+  .btn-small{padding:10px 20px;font-size:13.5px;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:64px 0 0;text-align:center;}
+  .hero .mark{width:64px;height:64px;border-radius:20px;margin:0 auto 34px;}
+  .hero .mark::before{width:16px;height:16px;top:16px;left:15px;}
+  .hero .mark::after{width:9px;height:9px;bottom:14px;right:14px;}
+  .hero h1{
+    font-size:clamp(34px,6vw,58px);font-weight:700;line-height:1.06;
+    max-width:760px;margin:0 auto;
+  }
+  .hero h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{
+    max-width:520px;margin:24px auto 38px;font-size:18px;color:var(--ink-soft);
+  }
+  .hero-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-bottom:56px;}
+
+  .stat-strip{
+    border-top:1px solid var(--line);
+    padding:26px 0;
+    display:flex;justify-content:center;gap:44px;flex-wrap:wrap;
+  }
+  .stat{display:flex;align-items:center;gap:9px;font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--ink);}
+  .stat .dot{width:8px;height:8px;border-radius:50%;background:var(--grad);}
+
+  /* ---------- BENTO FEATURES ---------- */
+  section{padding:88px 0;}
+  .section-head{text-align:center;max-width:560px;margin:0 auto 48px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:10px;display:block;
+  }
+  .section-head h2{font-size:clamp(28px,4vw,40px);}
+  .section-head p{color:var(--ink-soft);margin:14px 0 0;font-size:16px;}
+
+  .bento{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .card{
+    border-radius:18px;padding:18px 20px;
+    position:relative;overflow:hidden;
+  }
+  .card.full{grid-column:1 / -1;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;}
+  .card .icon{
+    width:38px;height:38px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.55);
+    margin-bottom:14px;
+  }
+  .card.full .icon{margin-bottom:0;}
+  .card h3{font-size:20px;font-weight:700;margin-bottom:6px;}
+  .card p{margin:0;font-size:14px;opacity:0.82;max-width:420px;}
+
+  .c-peach{background:var(--c-peach);color:var(--c-peach-ink);}
+  .c-butter{background:var(--c-butter);color:var(--c-butter-ink);}
+  .c-sage{background:var(--c-sage);color:var(--c-sage-ink);}
+  .c-lav{background:var(--c-lav);color:var(--c-lav-ink);}
+  .c-sky{background:var(--c-sky);color:var(--c-sky-ink);}
+  .c-rose{background:var(--c-rose);color:var(--c-rose-ink);}
+  .c-sand{background:var(--c-sand);color:var(--c-sand-ink);}
+  .c-dark{background:var(--ink);color:var(--bg-soft);}
+  .c-dark .icon{background:rgba(255,255,255,0.1);}
+  .c-dark p{opacity:.65;}
+
+  /* ---------- FAQ ---------- */
+  .faq-list{max-width:720px;margin:0 auto;}
+  details{
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px 26px;
+    margin-bottom:12px;
+  }
+  summary{
+    cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16.5px;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::after{
+    content:"+";font-family:'JetBrains Mono',monospace;font-size:15px;color:#fff;
+    background:var(--grad);width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex:none;margin-left:16px;
+    transition:transform .25s ease;
+  }
+  details[open] summary::after{content:"–";transform:rotate(180deg);}
+  details p{color:var(--ink-soft);margin:14px 0 0;font-size:15px;max-width:600px;}
+
+  /* ---------- CTA ---------- */
+  .cta{
+    text-align:center;border-radius:32px;
+    background:var(--ink);color:var(--bg-soft);
+    padding:80px 40px;position:relative;overflow:hidden;
+  }
+  .cta::before{
+    content:"";position:absolute;top:-220px;left:50%;transform:translateX(-50%);
+    width:700px;height:460px;
+    background:radial-gradient(ellipse at center, rgba(122,78,255,0.4), rgba(226,63,156,0.15) 45%, rgba(0,0,0,0) 72%);
+  }
+  .cta-inner{position:relative;}
+  .cta .mark{margin:0 auto 26px;}
+  .cta h2{font-size:clamp(28px,4.4vw,42px);margin-bottom:16px;}
+  .cta p{color:#B9B4AC;max-width:400px;margin:0 auto 32px;}
+  .cta .hero-actions{margin-bottom:0;}
+  .cta .btn-ghost{background:transparent;color:var(--bg-soft);border-color:#3A362F;}
+  .cta .btn-ghost:hover{border-color:var(--accent-2);}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:64px 0 40px;text-align:center;}
+  footer .mark{margin:0 auto 18px;}
+  footer p.tag{color:var(--ink-soft);font-size:14px;max-width:360px;margin:0 auto 36px;}
+  .foot-cols{display:flex;justify-content:center;gap:80px;flex-wrap:wrap;margin-bottom:40px;}
+  .foot-col h4{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px;}
+  .foot-col a{display:block;font-size:14.5px;color:var(--ink);text-decoration:none;margin-bottom:10px;font-weight:500;}
+  .foot-col a:hover{color:var(--accent);}
+  .foot-note{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:24px;}
+
+  @media (max-width:760px){
+    .bento{grid-template-columns:1fr;}
+    .card.full{grid-template-columns:1fr;text-align:left;}
+    .foot-cols{gap:48px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#" class="brand"><span class="mark"></span>Ryvo</a>
+    <a id="top-download" class="btn btn-solid btn-small" href="https://github.com/biikkkuuuu/ryvo/releases/latest">Download</a>
+  </nav>
+</header>
+
+<section class="hero" style="padding-bottom:0;">
+  <div class="wrap">
+    <span class="mark"></span>
+    <h1>Music that stays <span class="grad">out of your way.</span></h1>
+    <p class="lead">Ryvo is a free Android music player. Ad-free streaming, lyrics that stay in sync, and offline playback — with no account standing between you and the music.</p>
+    <div class="hero-actions">
+      <a class="btn btn-solid" href="#top-download">Download APK</a>
+      <a class="btn btn-ghost" href="https://github.com/biikkkuuuu/ryvo">View source</a>
+    </div>
+  </div>
+  <div class="stat-strip wrap">
+    <div class="stat"><span class="dot"></span>Free forever</div>
+    <div class="stat"><span class="dot"></span>Fully open source</div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Why Ryvo</span>
+      <h2>Everything you need, nothing you don't.</h2>
+      <p>Four reasons people are switching to Ryvo.</p>
+    </div>
+
+    <div class="bento">
+      <div class="card c-butter">
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="15" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
+        </div>
+        <h3>Synced lyrics</h3>
+        <p>Lines highlight in time with the song, so you're never hunting for the verse.</p>
+      </div>
+
+      <div class="card full c-dark">
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><line x1="3.27" y1="6.96" x2="12" y2="12.01"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <div>
+          <h3>Zero ads, forever</h3>
+          <p>No banners, no pre-rolls, no interruptions between songs. None, ever — that's not a launch promise, it's the whole point.</p>
+        </div>
+      </div>
+
+      <div class="card full c-sky">
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+        </div>
+        <div>
+          <h3>Adaptive theme</h3>
+          <p>The app's palette shifts to match your device wallpaper — feels native on every phone.</p>
+        </div>
+      </div>
+
+      <div class="card c-sand">
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
+        </div>
+        <h3>Data saver</h3>
+        <p>Bitrate drops automatically the moment your connection gets weak.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Questions</span>
+      <h2>Straight answers.</h2>
+      <p>Everything people usually ask before installing.</p>
+    </div>
+
+    <div class="faq-list">
+      <details open>
+        <summary>Is Ryvo really free?</summary>
+        <p>Yes, entirely. No paid tier, no ads, no subscription. It's open-source software, built and maintained in the open.</p>
+      </details>
+      <details>
+        <summary>What Android version do I need?</summary>
+        <p>Ryvo runs on Android 7.0 (Nougat) and above.</p>
+      </details>
+      <details>
+        <summary>Does it support lossless audio?</summary>
+        <p>Not yet. Standard streaming quality is supported today, and higher-bitrate playback is on the roadmap.</p>
+      </details>
+      <details>
+        <summary>Can I contribute?</summary>
+        <p>Always. Open an issue, submit a pull request, or suggest a feature on GitHub — all contributors are welcome.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta">
+      <div class="cta-inner">
+        <span class="mark"></span>
+        <h2>No ads.<br>Just play.</h2>
+        <p>Ryvo is free to download and free to keep.</p>
+        <div class="hero-actions">
+          <a class="btn btn-solid" href="https://github.com/biikkkuuuu/ryvo/releases/latest">Download APK</a>
+          <a class="btn btn-ghost" href="https://github.com/biikkkuuuu/ryvo">View source</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mark"></span>
+    <p class="tag">Ryvo is an independent, open-source Android music player.</p>
+
+    <div class="foot-cols">
+      <div class="foot-col">
+        <h4>Links</h4>
+        <a href="https://github.com/biikkkuuuu/ryvo">Source code</a>
+        <a href="https://github.com/biikkkuuuu/ryvo">GitHub repository</a>
+        <a href="https://github.com/biikkkuuuu/ryvo/releases/latest">Latest release</a>
+        <a href="https://github.com/biikkkuuuu/ryvo/issues">Report an issue</a>
+      </div>
+      <div class="foot-col">
+        <h4>Community</h4>
+        <a href="https://github.com/biikkkuuuu">@biikkkuuuu</a>
+        <a href="https://github.com/biikkkuuuu/ryvo/discussions">Discussions</a>
+        <a href="https://github.com/biikkkuuuu/ryvo">GitHub</a>
+      </div>
+    </div>
+
+    <p class="foot-note">Built by RANA.</p>
+  </div>
+</footer>
+
+</body>
+</html>
